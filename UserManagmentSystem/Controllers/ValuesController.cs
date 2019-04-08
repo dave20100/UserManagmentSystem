@@ -28,7 +28,8 @@ namespace UserManagmentSystem.Controllers
         [HttpPost]
         public string Post([FromForm] string username, [FromForm] string password)
         {
-            
+
+            return "OK";
         }
 
         // PUT api/values/5
