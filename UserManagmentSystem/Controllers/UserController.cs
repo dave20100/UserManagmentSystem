@@ -18,22 +18,32 @@ namespace UserManagmentSystem.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public IEnumerable<User> Get()
         {
             return _context.Users;
         }
+
         [HttpGet("{id}")]
         public User GetSpecific(int id)
         {
             return _context.Users.First((usr) => usr.Id == id);
         }
+
         [HttpPost]
-        public void Post([FromBody] User u)
+        public void Register([FromBody] User accountInfo)
         {
-            _context.Users.Add(u);
+            _context.Users.Add(accountInfo);
             _context.SaveChanges();
         }
-        //public 
+
+        [HttpDelete]
+        public void DeleteAccount([FromForm] User accountToDelete)
+        {
+            var acc = _context.Users.First((usr) => usr.Username == accountToDelete.Username);
+            _context.Remove(acc);
+            _context.SaveChanges();
+        }
     }
 }
