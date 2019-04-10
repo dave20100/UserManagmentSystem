@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
@@ -26,10 +27,13 @@ namespace UserManagmentSystem.Controllers
 
         // POST api/values
         [HttpPost]
-        public string Post([FromForm] string username, [FromForm] string password)
+        public IActionResult Post([FromBody] User us)
         {
-
-            return "OK";
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(User);
+            }
+            return CreatedAtAction("Get", us);
         }
 
         // PUT api/values/5

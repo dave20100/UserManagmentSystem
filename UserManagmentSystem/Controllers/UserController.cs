@@ -12,15 +12,28 @@ namespace UserManagmentSystem.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        [HttpGet]
-        public User Get()
+        private readonly UserContext _context;
+
+        public UserController(UserContext context)
         {
-            return new User
-            {
-                Id = 1,
-                Username = "dawid",
-                Money = 1
-            };
+            _context = context;
         }
+        [HttpGet]
+        public IEnumerable<User> Get()
+        {
+            return _context.Users;
+        }
+        [HttpGet("{id}")]
+        public User GetSpecific(int id)
+        {
+            return _context.Users.First((usr) => usr.Id == id);
+        }
+        [HttpPost]
+        public void Post([FromBody] User u)
+        {
+            _context.Users.Add(u);
+            _context.SaveChanges();
+        }
+        //public 
     }
 }
