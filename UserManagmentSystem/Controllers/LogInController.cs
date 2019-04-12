@@ -23,12 +23,15 @@ namespace UserManagmentSystem.Controllers
         public IActionResult LogIn([FromForm] User credentials)
         {
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
-            if (existingAccount.Password == credentials.Password)
+            if(existingAccount == null)
+            {
+                return BadRequest();
+            }
+            if (existingAccount.Password.Equals(credentials.Password))
             {
                 return Ok(existingAccount);
             }
-            Response.StatusCode = 501;
-            return BadRequest();
+            return Ok();
         }
     }
 }
