@@ -10,16 +10,16 @@ namespace UserManagmentSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LogInController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserContext _context;
 
-        public LogInController(UserContext context)
+        public AuthController(UserContext context)
         {
             _context = context;
         }
 
-        [HttpPost]
+        [HttpPost("LogIn")]
         public IActionResult LogIn([FromForm] User credentials)
         {
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
@@ -31,7 +31,16 @@ namespace UserManagmentSystem.Controllers
             {
                 return Ok(existingAccount);
             }
-            return Ok();
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpPost("LogOut")]
+        public IActionResult LogOut([FromForm] User c)
+        {
+            return Ok(c);
         }
     }
 }
