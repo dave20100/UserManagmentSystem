@@ -40,7 +40,7 @@ namespace UserManagmentSystem.Controllers
             var acc = _context.Users.FirstOrDefault((usr) => usr.Username == accountInfo.Username);
             if (acc != null)
             {
-                return BadRequest("Name already taken");
+                return BadRequest("Username already taken");
             }
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
