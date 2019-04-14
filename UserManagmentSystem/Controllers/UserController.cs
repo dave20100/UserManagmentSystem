@@ -22,15 +22,16 @@ namespace UserManagmentSystem.Controllers
 
         [HttpGet]
         [Authorize]
-        public IEnumerable<User> Get()
+        public IEnumerable<string> Get()
         {
-            return _context.Users;
+            return _context.Users.Select((usr) => usr.Username);
         }
 
-        [HttpGet("{id}")]
-        public User GetSpecific(int id)
+        [HttpGet("Info")]
+        [Authorize]
+        public User GetSpecific()
         {
-            return _context.Users.First((usr) => usr.Id == id);
+            return _context.Users.First((usr) => usr.Username == User.Identity.Name);
         }
 
         [HttpPost]
@@ -47,9 +48,9 @@ namespace UserManagmentSystem.Controllers
         }
 
         [HttpDelete]
-        public void DeleteAccount([FromForm] User accountToDelete)
+        public void DeleteAccount()
         {
-            var acc = _context.Users.First((usr) => usr.Username == accountToDelete.Username);
+            var acc = _context.Users.First((usr) => usr.Username == User.Identity.Name);
             _context.Remove(acc);
             _context.SaveChanges();
         }
