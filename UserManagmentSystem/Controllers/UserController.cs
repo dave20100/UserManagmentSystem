@@ -30,6 +30,7 @@ namespace UserManagmentSystem.Controllers
         [HttpGet("{id}")]
         public User GetSpecific(int id)
         {
+
             return _context.Users.First((usr) => usr.Id == id);
         }
 
