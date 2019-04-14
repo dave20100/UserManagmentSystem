@@ -30,15 +30,20 @@ namespace UserManagmentSystem.Controllers
         [HttpGet("{id}")]
         public User GetSpecific(int id)
         {
-
             return _context.Users.First((usr) => usr.Id == id);
         }
 
         [HttpPost]
-        public void Register([FromBody] User accountInfo)
+        public IActionResult Register([FromBody] User accountInfo)
         {
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == accountInfo.Username);
+            if (acc != null)
+            {
+                return BadRequest("Name already taken");
+            }
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
+            return Ok();
         }
 
         [HttpDelete]
