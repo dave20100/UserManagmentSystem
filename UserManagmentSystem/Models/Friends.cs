@@ -8,7 +8,7 @@ namespace UserManagmentSystem.Models
     public class Friends
     {
         public int Id { get; set; }
-        public int IdOfFriend1 { get; set; }
-        public int IdOfFriend2 { get; set; }
+        public int FriendId1 { get; set; }
+        public int FriendId2 { get; set; }
     }
 }

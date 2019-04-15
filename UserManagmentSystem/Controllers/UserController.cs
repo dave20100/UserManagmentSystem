@@ -58,26 +58,31 @@ namespace UserManagmentSystem.Controllers
 
         [HttpPost("AddFriend")]
         [Authorize]
-        public IActionResult AddFriend([FromBody] Friends friend)
+        public IActionResult AddFriend([FromBody] string friendUsername)
         {
             var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
 
-            //var friendAcc = _context.Users.FirstOrDefault((usr) => usr.Username == friendUsername);
+            var friendAcc = _context.Users.FirstOrDefault((usr) => usr.Username == friendUsername);
+
             if (acc == null)
             {
                 return BadRequest();
             }
-            _context.Friends.Add(friend);
+            Friends friends = new Friends()
+            {
+                FriendId1 = acc.Id,
+                FriendId2 = friendAcc.Id
+            };
+            _context.Friends.Add(friends);
+            _context.SaveChanges();
             return Ok();
         }
 
         [HttpGet("ShowFriends")]
         [Authorize]
-        public IEnumerable<User> ShowFriends()
+        public IEnumerable<Friends> ShowFriends()
         {
-            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
-            var listOfFriendsId =_context.Friends.Where((friend) => friend.IdOfFriend1 == acc.Id || friend.IdOfFriend2 == acc.Id).Select((ids) => ids.IdOfFriend1 == acc.Id? ids.IdOfFriend1 : ids.IdOfFriend2);
-            return _context.Users.Where((user) => listOfFriendsId.Contains(user.Id));
+            return _context.Friends;
         }
     }
 }
