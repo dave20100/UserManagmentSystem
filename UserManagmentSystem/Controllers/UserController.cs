@@ -29,7 +29,7 @@ namespace UserManagmentSystem.Controllers
 
         [HttpGet("Info")]
         [Authorize]
-        public User GetSpecific()
+        public User GetAllInfo()
         {
             return _context.Users.First((usr) => usr.Username == User.Identity.Name);
         }
@@ -44,15 +44,40 @@ namespace UserManagmentSystem.Controllers
             }
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
-            return Ok();
+            return Ok(TokenManager.generateToken(accountInfo.Username));
         }
 
         [HttpDelete]
+        [Authorize]
         public void DeleteAccount()
         {
-            var acc = _context.Users.First((usr) => usr.Username == User.Identity.Name);
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
             _context.Remove(acc);
             _context.SaveChanges();
+        }
+
+        [HttpPost("AddFriend")]
+        [Authorize]
+        public IActionResult AddFriend([FromBody] Friends friend)
+        {
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
+
+            //var friendAcc = _context.Users.FirstOrDefault((usr) => usr.Username == friendUsername);
+            if (acc == null)
+            {
+                return BadRequest();
+            }
+            _context.Friends.Add(friend);
+            return Ok();
+        }
+
+        [HttpGet("ShowFriends")]
+        [Authorize]
+        public IEnumerable<User> ShowFriends()
+        {
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
+            var listOfFriendsId =_context.Friends.Where((friend) => friend.IdOfFriend1 == acc.Id || friend.IdOfFriend2 == acc.Id).Select((ids) => ids.IdOfFriend1 == acc.Id? ids.IdOfFriend1 : ids.IdOfFriend2);
+            return _context.Users.Where((user) => listOfFriendsId.Contains(user.Id));
         }
     }
 }
