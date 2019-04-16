@@ -22,7 +22,9 @@ namespace UserManagmentSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<UserContext>(options => options.UseInMemoryDatabase("UsersBase"));
+            //services.AddDbContext<UserContext>(options => options.UseInMemoryDatabase("UsersBase"));
+            services.AddDbContext<UserContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

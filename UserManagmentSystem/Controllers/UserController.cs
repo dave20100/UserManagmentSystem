@@ -20,11 +20,10 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Authorize]
-        public IEnumerable<string> Get()
+        [HttpGet("Ranking")]
+        public IEnumerable<string> GetRanking()
         {
-            return _context.Users.Select((usr) => usr.Username);
+            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " " + usr.Money);
         }
 
         [HttpGet("Info")]
@@ -38,10 +37,12 @@ namespace UserManagmentSystem.Controllers
         public IActionResult Register([FromBody] User accountInfo)
         {
             var acc = _context.Users.FirstOrDefault((usr) => usr.Username == accountInfo.Username);
-            if (acc != null)
+            if (!ModelState.IsValid || acc != null)
             {
                 return BadRequest("Username already taken");
             }
+            Random r = new Random();
+            accountInfo.Money = r.Next(0, 100);
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
             return Ok(TokenManager.generateToken(accountInfo.Username));
