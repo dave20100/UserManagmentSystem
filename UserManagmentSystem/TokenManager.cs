@@ -13,17 +13,24 @@ namespace UserManagmentSystem
     {
         private static string securityKey = "Secure_key_for_token_validation";
         public static SymmetricSecurityKey symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
+
+        public static class TokenParameters
+        {
+            public static DateTime expireDate = DateTime.Now.AddHours(24 - DateTime.Now.Hour);
+            public static SigningCredentials userSigningCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256Signature);
+            public static string issuer = "trc";
+            public static string audience = "users";
+        }
         
         public static string generateToken(string username)
         {
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, username));
-            var userSigningCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256Signature);
             var token = new JwtSecurityToken(
-                expires: DateTime.Now.AddDays(14),
-                signingCredentials: userSigningCredentials,
-                issuer: "trc",
-                audience: "users",
+                expires: TokenParameters.expireDate,
+                signingCredentials: TokenParameters.userSigningCredentials,
+                issuer: TokenParameters.issuer,
+                audience: TokenParameters.audience,
                 claims: claims
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);

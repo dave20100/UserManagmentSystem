@@ -20,19 +20,6 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpGet("Ranking")]
-        public IEnumerable<string> GetRanking()
-        {
-            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " " + usr.Money);
-        }
-
-        [HttpGet("Info")]
-        [Authorize]
-        public User GetAllInfo()
-        {
-            return _context.Users.First((usr) => usr.Username == User.Identity.Name);
-        }
-
         [HttpPost]
         public IActionResult Register([FromBody] User accountInfo)
         {
@@ -48,42 +35,38 @@ namespace UserManagmentSystem.Controllers
             return Ok(TokenManager.generateToken(accountInfo.Username));
         }
 
-        [HttpDelete]
-        [Authorize]
-        public void DeleteAccount()
+
+        [HttpGet("Ranking")]
+        public IEnumerable<string> GetRanking()
         {
-            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
-            _context.Remove(acc);
-            _context.SaveChanges();
+            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " " + usr.Money);
         }
 
-        [HttpPost("AddFriend")]
+        [HttpGet("Info")]
         [Authorize]
-        public IActionResult AddFriend([FromBody] string friendUsername)
+        public ActionResult<User> GetAllInfo()
         {
-            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
-
-            var friendAcc = _context.Users.FirstOrDefault((usr) => usr.Username == friendUsername);
-
-            if (acc == null)
+            User currentUser = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
+            if(currentUser == null)
             {
                 return BadRequest();
             }
-            Friends friends = new Friends()
-            {
-                FriendId1 = acc.Id,
-                FriendId2 = friendAcc.Id
-            };
-            _context.Friends.Add(friends);
-            _context.SaveChanges();
-            return Ok();
+            return Ok(currentUser);
         }
 
-        [HttpGet("ShowFriends")]
+        
+        [HttpDelete]
         [Authorize]
-        public IEnumerable<Friends> ShowFriends()
+        public IActionResult DeleteAccount()
         {
-            return _context.Friends;
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
+            if(acc == null)
+            {
+                return BadRequest("Error");
+            }
+            _context.Remove(acc);
+            _context.SaveChanges();
+            return Ok("User deleted succesfully");
         }
     }
 }

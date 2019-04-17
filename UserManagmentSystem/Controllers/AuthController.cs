@@ -21,7 +21,7 @@ namespace UserManagmentSystem.Controllers
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
             if(existingAccount == null)
             {
-                return BadRequest();
+                return BadRequest($"User {credentials.Username} does not exist");
             }
             if (existingAccount.Password.Equals(credentials.Password))
             {
@@ -29,7 +29,7 @@ namespace UserManagmentSystem.Controllers
             }
             else
             {
-                return Forbid();
+                return Forbid("Incorrect password");
             }
         }
 

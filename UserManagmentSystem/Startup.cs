@@ -33,8 +33,8 @@ namespace UserManagmentSystem
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "trc",
-                        ValidAudience = "users",
+                        ValidIssuer = TokenManager.TokenParameters.issuer,
+                        ValidAudience = TokenManager.TokenParameters.audience,
                         IssuerSigningKey = TokenManager.symmetricKey
                     };
                 });
