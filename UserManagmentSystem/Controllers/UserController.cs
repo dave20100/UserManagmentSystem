@@ -23,8 +23,7 @@ namespace UserManagmentSystem.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] User accountInfo)
         {
-            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == accountInfo.Username);
-            if (!ModelState.IsValid || acc != null)
+            if (findAndReturnUserFromDb(accountInfo.Username) != null)
             {
                 return BadRequest("Username already taken");
             }
@@ -46,8 +45,8 @@ namespace UserManagmentSystem.Controllers
         [Authorize]
         public ActionResult<User> GetAllInfo()
         {
-            User currentUser = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
-            if(currentUser == null)
+            User currentUser = findAndReturnUserFromDb(User.Identity.Name);
+            if (currentUser == null)
             {
                 return BadRequest();
             }
@@ -59,8 +58,8 @@ namespace UserManagmentSystem.Controllers
         [Authorize]
         public IActionResult DeleteAccount()
         {
-            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
-            if(acc == null)
+            var acc = findAndReturnUserFromDb(User.Identity.Name);
+            if (acc == null)
             {
                 return BadRequest("Error");
             }
@@ -68,5 +67,11 @@ namespace UserManagmentSystem.Controllers
             _context.SaveChanges();
             return Ok("User deleted succesfully");
         }
+    
+        private User findAndReturnUserFromDb(string username)
+        {
+            return _context.Users.FirstOrDefault((usr) => usr.Username == username);
+        }
+
     }
 }

@@ -15,7 +15,10 @@ namespace UserManagmentSystem.Models
         public int Id { get; set; }
         [Required]
         public string Username { get; set; }
-        [MinLength(6)]
+        [Required]
+        [DataType( DataType.Password)]
+        [MinLength(8)]
+        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")]
         public string Password { get; set; }
         [EmailAddress]
         public string Email { get; set; }
