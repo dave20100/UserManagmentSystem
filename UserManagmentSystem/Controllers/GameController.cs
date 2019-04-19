@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
@@ -11,5 +12,19 @@ namespace UserManagmentSystem.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
+        private readonly UserContext _context;
+
+        public GameController(UserContext context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<WaitingRoom> waitingRooms()
+        {
+            return _context.waitingRooms;
+        }
+
+        
     }
 }
