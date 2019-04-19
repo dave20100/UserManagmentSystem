@@ -38,7 +38,7 @@ namespace UserManagmentSystem.Controllers
         [HttpGet("Ranking")]
         public IEnumerable<string> GetRanking()
         {
-            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " " + usr.Money);
+            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " : " + usr.Money + " pln");
         }
 
         [HttpGet("Info")]
@@ -68,10 +68,64 @@ namespace UserManagmentSystem.Controllers
             return Ok("User deleted succesfully");
         }
     
+        [HttpPost("AddFriend")]
+        [Authorize]
+        public IActionResult AddFriend([FromBody] string friendUsername)
+        {
+            var acc = findAndReturnUserFromDb(User.Identity.Name);
+
+            var friendAcc = findAndReturnUserFromDb(friendUsername);
+
+            if (acc == null || friendAcc == null || acc == friendAcc)
+            {
+                return BadRequest();
+            }
+
+            if (_context.Friends.FirstOrDefault((friendship) => (friendship.FriendId1 == acc.Id || friendship.FriendId2 == acc.Id) 
+            && (friendship.FriendId2 == friendAcc.Id || friendship.FriendId2 == friendAcc.Id)) != null){
+                return BadRequest();
+            }
+            Friends friends = new Friends()
+            {
+                FriendId1 = acc.Id,
+                FriendId2 = friendAcc.Id
+            };
+
+            _context.Friends.Add(friends);
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        [HttpGet("ShowFriends")]
+        [Authorize]
+        public IEnumerable<string> ShowFriends()
+        {
+            var acc = findAndReturnUserFromDb(User.Identity.Name);
+            if (acc == null)
+            {
+                return null;
+            }
+
+            List<string> usersFriends = new List<string>();
+
+            foreach (Friends friendship in _context.Friends)
+            {
+                if (acc.Id != friendship.FriendId1 && acc.Id != friendship.FriendId2)
+                {
+                    continue;
+                }
+                int idOfFriend = friendship.FriendId1 != acc.Id ? friendship.FriendId1 : friendship.FriendId2;
+                User user = _context.Users.FirstOrDefault((usr) => usr.Id == idOfFriend);
+                usersFriends.Add(acc.Id + " " + idOfFriend + " " + user.Username);
+            }
+            return usersFriends;
+
+
+        }
+
         private User findAndReturnUserFromDb(string username)
         {
             return _context.Users.FirstOrDefault((usr) => usr.Username == username);
         }
-
     }
 }

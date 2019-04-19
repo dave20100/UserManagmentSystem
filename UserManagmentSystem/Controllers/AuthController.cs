@@ -15,7 +15,7 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpPost("LogIn")]
+        [HttpPost("Login")]
         public IActionResult LogIn([FromForm] User credentials)
         {
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
@@ -33,7 +33,7 @@ namespace UserManagmentSystem.Controllers
             }
         }
 
-        [HttpPost("LogOut")]
+        [HttpPost("Logout")]
         public IActionResult LogOut([FromForm] User c)
         {
             return Ok(c);
