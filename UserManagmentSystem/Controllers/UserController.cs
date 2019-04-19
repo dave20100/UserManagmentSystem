@@ -81,9 +81,16 @@ namespace UserManagmentSystem.Controllers
                 return BadRequest();
             }
 
-            if (_context.Friends.FirstOrDefault((friendship) => (friendship.FriendId1 == acc.Id || friendship.FriendId2 == acc.Id) 
-            && (friendship.FriendId2 == friendAcc.Id || friendship.FriendId2 == friendAcc.Id)) != null){
-                return BadRequest();
+            var existingFriendship = _context.Friends.FirstOrDefault((friendship) => (friendship.FriendId1 == acc.Id || friendship.FriendId2 == acc.Id)
+            && (friendship.FriendId2 == friendAcc.Id || friendship.FriendId2 == friendAcc.Id));
+            if (existingFriendship != null){
+                if (existingFriendship.Accepted == true)
+                {
+                    return BadRequest();
+                }
+                existingFriendship.Accepted = true;
+                _context.SaveChanges();
+                return Ok();
             }
             Friends friends = new Friends()
             {
@@ -111,6 +118,10 @@ namespace UserManagmentSystem.Controllers
             foreach (Friends friendship in _context.Friends)
             {
                 if (acc.Id != friendship.FriendId1 && acc.Id != friendship.FriendId2)
+                {
+                    continue;
+                }
+                if (!friendship.Accepted)
                 {
                     continue;
                 }

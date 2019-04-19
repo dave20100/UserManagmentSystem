@@ -10,5 +10,6 @@ namespace UserManagmentSystem.Models
         public int Id { get; set; }
         public int FriendId1 { get; set; }
         public int FriendId2 { get; set; }
+        public bool Accepted { get; set; }
     }
 }
