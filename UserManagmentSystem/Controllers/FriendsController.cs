@@ -32,11 +32,13 @@ namespace UserManagmentSystem.Controllers
             {
                 return BadRequest();
             }
+
             Friends friends = new Friends()
             {
                 FriendId1 = acc.Id,
                 FriendId2 = friendAcc.Id
             };
+
             _context.Friends.Add(friends);
             _context.SaveChanges();
             return Ok();
@@ -44,9 +46,27 @@ namespace UserManagmentSystem.Controllers
 
         [HttpGet("ShowFriends")]
         [Authorize]
-        public IEnumerable<Friends> ShowFriends()
+        public IEnumerable<string> ShowFriends()
         {
-            return _context.Friends;
+
+            var acc = _context.Users.FirstOrDefault((usr) => usr.Username == User.Identity.Name);
+            if(acc == null)
+            {
+                return null;
+            }
+            List<string> usersFriends = new List<string>();
+
+            foreach(Friends friendship in _context.Friends)
+            {
+                if(acc.Id != friendship.FriendId1 && acc.Id != friendship.FriendId2)
+                {
+                    continue;
+                }
+                int idOfFriend = friendship.FriendId1 != acc.Id ? friendship.FriendId1 : friendship.FriendId2;
+                User user = _context.Users.FirstOrDefault((usr) => usr.Id == idOfFriend);
+                usersFriends.Add(acc.Id + " " + idOfFriend + " " + user.Username);
+            }
+            return usersFriends;
         }
     }
 }

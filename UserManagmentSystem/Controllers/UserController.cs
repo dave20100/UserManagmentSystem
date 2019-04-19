@@ -20,7 +20,7 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public IActionResult Register([FromBody] User accountInfo)
         {
             if (findAndReturnUserFromDb(accountInfo.Username) != null)
