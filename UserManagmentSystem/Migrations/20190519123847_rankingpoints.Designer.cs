@@ -9,8 +9,8 @@ using UserManagmentSystem.Models;
 namespace UserManagmentSystem.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20190416120419_initial")]
-    partial class initial
+    [Migration("20190519123847_rankingpoints")]
+    partial class rankingpoints
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,8 @@ namespace UserManagmentSystem.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Accepted");
 
                     b.Property<int>("FriendId1");
 
@@ -43,7 +45,10 @@ namespace UserManagmentSystem.Migrations
 
                     b.Property<int>("Money");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Password")
+                        .IsRequired();
+
+                    b.Property<int>("RankingPoints");
 
                     b.Property<string>("Username")
                         .IsRequired();

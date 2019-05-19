@@ -2,22 +2,22 @@
 
 namespace UserManagmentSystem.Migrations
 {
-    public partial class addaccepted : Migration
+    public partial class rankingpoints : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "Accepted",
-                table: "Friends",
+            migrationBuilder.AddColumn<int>(
+                name: "RankingPoints",
+                table: "Users",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Accepted",
-                table: "Friends");
+                name: "RankingPoints",
+                table: "Users");
         }
     }
 }

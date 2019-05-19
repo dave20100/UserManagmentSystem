@@ -27,8 +27,8 @@ namespace UserManagmentSystem.Controllers
             {
                 return BadRequest("Username already taken");
             }
-            Random r = new Random();
-            accountInfo.Money = r.Next(0, 100);
+            
+            accountInfo.RankingPoints = 1000;
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
             return Ok(TokenManager.generateToken(accountInfo.Username));
@@ -38,7 +38,7 @@ namespace UserManagmentSystem.Controllers
         [HttpGet("Ranking")]
         public IEnumerable<string> GetRanking()
         {
-            return _context.Users.OrderBy((usr) => usr.Money).Select((usr) => usr.Username + " : " + usr.Money + " pln");
+            return _context.Users.OrderBy((usr) => usr.RankingPoints).Select((usr) => usr.Username + " : " + usr.RankingPoints + " pts");
         }
 
         [HttpGet("Info")]

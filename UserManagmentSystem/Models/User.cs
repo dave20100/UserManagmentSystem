@@ -27,5 +27,6 @@ namespace UserManagmentSystem.Models
         public string Email { get; set; }
 
         public int Money { get; set; }
+        public int RankingPoints { get; set; }
     }
 }

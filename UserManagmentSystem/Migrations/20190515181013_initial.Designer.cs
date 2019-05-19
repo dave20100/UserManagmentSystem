@@ -9,8 +9,8 @@ using UserManagmentSystem.Models;
 namespace UserManagmentSystem.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20190419134607_second")]
-    partial class second
+    [Migration("20190515181013_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,8 @@ namespace UserManagmentSystem.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("Accepted");
 
                     b.Property<int>("FriendId1");
 
@@ -52,20 +54,6 @@ namespace UserManagmentSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("UserManagmentSystem.Models.WaitingRoom", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("BetAmount");
-
-                    b.Property<int>("GameId");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("waitingRooms");
                 });
 #pragma warning restore 612, 618
         }

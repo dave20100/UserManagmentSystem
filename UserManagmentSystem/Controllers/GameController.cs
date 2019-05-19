@@ -19,12 +19,6 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IEnumerable<WaitingRoom> waitingRooms()
-        {
-            return _context.waitingRooms;
-        }
-
         
     }
 }

@@ -46,26 +46,14 @@ namespace UserManagmentSystem.Migrations
                     b.Property<string>("Password")
                         .IsRequired();
 
+                    b.Property<int>("RankingPoints");
+
                     b.Property<string>("Username")
                         .IsRequired();
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("UserManagmentSystem.Models.WaitingRoom", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("BetAmount");
-
-                    b.Property<int>("GameId");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("waitingRooms");
                 });
 #pragma warning restore 612, 618
         }
