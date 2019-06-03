@@ -1,12 +1,14 @@
 ﻿using System.Linq;
+using System.Web.Http.Cors;
 using Microsoft.AspNetCore.Mvc;
 using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : Controller
     {
         private readonly UserContext _context;
 
@@ -14,22 +16,22 @@ namespace UserManagmentSystem.Controllers
         {
             _context = context;
         }
-
         [HttpPost("Login")]
-        public IActionResult LogIn([FromForm] User credentials)
+        public JsonResult Login([FromBody] User credentials)
         {
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
             if(existingAccount == null)
             {
-                return BadRequest($"User {credentials.Username} does not exist");
+                return Json(1);
+                //return BadRequest($"User {credentials.Username} does not exist");
             }
             if (existingAccount.Password.Equals(credentials.Password))
             {
-                return Ok(TokenManager.generateToken(credentials.Username));
+                return Json(TokenManager.generateToken(credentials.Username));
             }
             else
             {
-                return Forbid("Incorrect password");
+                return Json(2);
             }
         }
 

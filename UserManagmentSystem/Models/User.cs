@@ -20,7 +20,7 @@ namespace UserManagmentSystem.Models
         [Required]
         [DataType( DataType.Password)]
         [MinLength(8)]
-        [RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")]
+        //[RegularExpression(@"^((?=.*[a-z])(?=.*[A-Z])(?=.*\d)).+$")]
         public string Password { get; set; }
 
         [EmailAddress]

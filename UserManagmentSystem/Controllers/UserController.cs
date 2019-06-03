@@ -10,6 +10,7 @@ using UserManagmentSystem.Models;
 namespace UserManagmentSystem.Controllers
 {
     [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class UserController : ControllerBase
     {
