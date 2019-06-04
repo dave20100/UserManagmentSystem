@@ -28,5 +28,6 @@ namespace UserManagmentSystem.Models
 
         public int Money { get; set; }
         public int RankingPoints { get; set; }
+        
     }
 }

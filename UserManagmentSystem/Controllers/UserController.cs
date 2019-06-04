@@ -12,7 +12,7 @@ namespace UserManagmentSystem.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
         private readonly UserContext _context;
 
@@ -22,24 +22,25 @@ namespace UserManagmentSystem.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register([FromBody] User accountInfo)
+        public JsonResult Register([FromBody] User accountInfo)
         {
             if (findAndReturnUserFromDb(accountInfo.Username) != null)
             {
-                return BadRequest("Username already taken");
+                return Json(new { status = 101 });
             }
             
             accountInfo.RankingPoints = 1000;
             _context.Users.Add(accountInfo);
             _context.SaveChanges();
-            return Ok(TokenManager.generateToken(accountInfo.Username));
+            return Json(new { status = 100, token = TokenManager.generateToken(accountInfo.Username) });
         }
 
 
         [HttpGet("Ranking")]
-        public IEnumerable<string> GetRanking()
+        public JsonResult GetRanking()
         {
-            return _context.Users.OrderBy((usr) => usr.RankingPoints).Select((usr) => usr.Username + " : " + usr.RankingPoints + " pts");
+
+            return Json(_context.Users.OrderBy((usr) => usr.RankingPoints).Select((usr) => new { username = usr.Username, points = usr.RankingPoints}));
         }
 
         [HttpGet("Info")]

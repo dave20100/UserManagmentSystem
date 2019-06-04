@@ -16,22 +16,23 @@ namespace UserManagmentSystem.Controllers
         {
             _context = context;
         }
+
         [HttpPost("Login")]
         public JsonResult Login([FromBody] User credentials)
         {
             var existingAccount = _context.Users.FirstOrDefault((user) => user.Username == credentials.Username);
             if(existingAccount == null)
             {
-                return Json(1);
+                return Json(new { status = 101 });
                 //return BadRequest($"User {credentials.Username} does not exist");
             }
             if (existingAccount.Password.Equals(credentials.Password))
             {
-                return Json(TokenManager.generateToken(credentials.Username));
+                return Json(new { status = 103, token = TokenManager.generateToken(credentials.Username) });
             }
             else
             {
-                return Json(2);
+                return Json(new { status = 102 });
             }
         }
 

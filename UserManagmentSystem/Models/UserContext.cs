@@ -12,6 +12,6 @@ namespace UserManagmentSystem.Models
 
         public DbSet<User> Users { get; set; }
         public DbSet<Friends> Friends { get; set; }
-
+        public DbSet<Room> Rooms { get; set; }
     }
 }
