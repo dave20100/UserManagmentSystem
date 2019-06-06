@@ -16,5 +16,7 @@ namespace UserManagmentSystem.Models
         public string Player2Name { get; set; }
         public int Cash { get; set; }
         public string GameName { get; set; }
+        public int timeControl { get; set; }
+        public int timeControlBonus { get; set; }
     }
 }

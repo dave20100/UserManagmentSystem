@@ -45,14 +45,14 @@ namespace UserManagmentSystem.Controllers
 
         [HttpGet("Info")]
         [Authorize]
-        public ActionResult<User> GetAllInfo()
+        public JsonResult GetAllInfo()
         {
             User currentUser = findAndReturnUserFromDb(User.Identity.Name);
             if (currentUser == null)
             {
-                return BadRequest();
+                return Json(new { status = 101 });
             }
-            return Ok(currentUser);
+            return Json(new {currentUser});
         }
 
         
@@ -107,7 +107,7 @@ namespace UserManagmentSystem.Controllers
 
         [HttpGet("ShowFriends")]
         [Authorize]
-        public IEnumerable<string> ShowFriends()
+        public JsonResult ShowFriends()
         {
             var acc = findAndReturnUserFromDb(User.Identity.Name);
             if (acc == null)
@@ -115,7 +115,7 @@ namespace UserManagmentSystem.Controllers
                 return null;
             }
 
-            List<string> usersFriends = new List<string>();
+            List<User> usersFriends = new List<User>();
 
             foreach (Friends friendship in _context.Friends)
             {
@@ -129,9 +129,10 @@ namespace UserManagmentSystem.Controllers
                 }
                 int idOfFriend = friendship.FriendId1 != acc.Id ? friendship.FriendId1 : friendship.FriendId2;
                 User user = _context.Users.FirstOrDefault((usr) => usr.Id == idOfFriend);
-                usersFriends.Add(acc.Id + " " + idOfFriend + " " + user.Username);
+                usersFriends.Add(user);
+                //usersFriends.Add(acc.Id + " " + idOfFriend + " " + user.Username);
             }
-            return usersFriends;
+            return Json(usersFriends);
 
 
         }

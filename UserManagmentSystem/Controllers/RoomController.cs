@@ -9,7 +9,7 @@ using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{id?}")]
     [ApiController]
     public class RoomController : Controller
     {
@@ -23,27 +23,39 @@ namespace UserManagmentSystem.Controllers
         [Authorize]
         public JsonResult GetRooms()
         {
-            return Json(_context.Rooms.Select(room => (new { Player1 = room.Player1Name, Player2 = room.Player2Name, Cash = room.Cash})));
+            return Json(_context.Rooms.Select(room => (new { room})));
         }
 
         [HttpPost("Create")]
         [Authorize]
         public void CreateRoom([FromBody] Room roomToCreate)
         {
-            Room newRoom = new Room() { Player1Name = User.Identity.Name, Cash = roomToCreate.Cash };
+            Room newRoom = roomToCreate;
+            newRoom.Player1Name = User.Identity.Name;
             _context.Rooms.Add(newRoom);
             _context.SaveChanges();
         }
 
         [Authorize]
         [HttpPost("Join")]
-        public void JoinRoom([FromBody]int roomId)
+        public void JoinRoom([FromBody]Room roomToJoin)
         {
-            var joinedRoom =_context.Rooms.FirstOrDefault(room => room.Id == roomId);
+            var joinedRoom =_context.Rooms.FirstOrDefault(room => room.Id == roomToJoin.Id);
             joinedRoom.Player2Name = User.Identity.Name;
             
             _context.Rooms.Remove(joinedRoom);
             _context.SaveChanges();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public JsonResult GetSpecificInfo(int id)
+        {
+            var roomInfo = _context.Rooms.FirstOrDefault(room => room.Id == id);
+            var player1 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player1Name);
+
+            var player2 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player2Name);
+            return Json(new { Room = roomInfo, Player1Name = player1?.Username, Player1Id = player1?.Id, Player2Name = player2?.Username, Player2Id = player2?.Id });
         }
             
     }
