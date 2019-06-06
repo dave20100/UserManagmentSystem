@@ -47,7 +47,6 @@ namespace UserManagmentSystem.Controllers
             _context.SaveChanges();
         }
 
-        [Authorize]
         [HttpGet]
         public JsonResult GetSpecificInfo(int id)
         {

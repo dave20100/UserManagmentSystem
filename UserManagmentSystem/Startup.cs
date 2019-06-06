@@ -28,8 +28,10 @@ namespace UserManagmentSystem
             {
                 options.AddPolicy("CorsPolicy", builder =>
                 {
-                    builder.AllowAnyOrigin();
+                    builder.WithOrigins("http://localhost:3000");
+                    //builder.AllowAnyOrigin();
                     builder.AllowAnyHeader();
+                    builder.AllowCredentials();
                 });
             });
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
