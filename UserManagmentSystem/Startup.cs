@@ -30,6 +30,7 @@ namespace UserManagmentSystem
                 {
                     builder.WithOrigins("http://localhost:3000");
                     //builder.AllowAnyOrigin();
+                    builder.AllowAnyMethod();
                     builder.AllowAnyHeader();
                     builder.AllowCredentials();
                 });

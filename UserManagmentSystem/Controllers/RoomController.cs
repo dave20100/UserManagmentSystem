@@ -55,5 +55,16 @@ namespace UserManagmentSystem.Controllers
             }
         }
 
+        [HttpGet("checkroom")]
+        public JsonResult CheckRoom(int Id)
+        {
+            var gameroom = _context.Rooms.FirstOrDefault(room => room.Id == Id && room.Player1Name != null && room.Player2Name != null);
+            if (gameroom != null)
+            {
+                return Json(new { Username1 = gameroom.Player1Name, Username2 = gameroom.Player2Name });
+            }
+            return Json(new { status = 101 });
+        }
+
     }
 }
