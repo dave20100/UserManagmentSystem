@@ -26,36 +26,34 @@ namespace UserManagmentSystem.Controllers
             return Json(_context.Rooms.Select(room => (new { room})));
         }
 
-        [HttpPost("Create")]
-        [Authorize]
-        public void CreateRoom([FromBody] Room roomToCreate)
-        {
-            Room newRoom = roomToCreate;
-            newRoom.Player1Name = User.Identity.Name;
-            _context.Rooms.Add(newRoom);
-            _context.SaveChanges();
-        }
 
         [Authorize]
-        [HttpPost("Join")]
-        public void JoinRoom([FromBody]Room roomToJoin)
-        {
-            var joinedRoom =_context.Rooms.FirstOrDefault(room => room.Id == roomToJoin.Id);
-            joinedRoom.Player2Name = User.Identity.Name;
-            
-            _context.Rooms.Remove(joinedRoom);
-            _context.SaveChanges();
-        }
-
-        [HttpGet]
-        public JsonResult GetSpecificInfo(int id)
+        [HttpPost]
+        public JsonResult GetSpecificInfo(int id, [FromBody] Room game)
         {
             var roomInfo = _context.Rooms.FirstOrDefault(room => room.Id == id);
-            var player1 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player1Name);
+            if(roomInfo == null)
+            {
+                Room newRoom = new Room() { Id = id, Player1Name = User.Identity.Name, timeControl = game.timeControl, timeControlBonus = game.timeControlBonus, Cash = game.Cash, GameName = game.GameName };
+                _context.Rooms.Add(newRoom);
+                _context.SaveChanges();
+                return Json(newRoom);
+            }
+            else
+            {
+                var foundRoom = _context.Rooms.FirstOrDefault(room => (room.Player1Name == User.Identity.Name && room.Player2Name != null) || (room.Player2Name == User.Identity.Name && room.Player1Name != null));
+                if (foundRoom != null)
+                {
+                    return Json(foundRoom);
+                }
+                var joinedRoom = _context.Rooms.FirstOrDefault(room => room.Id == id);
+                joinedRoom.Player2Name = User.Identity.Name;
 
-            var player2 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player2Name);
-            return Json(new { Room = roomInfo, Player1Name = player1?.Username, Player1Id = player1?.Id, Player2Name = player2?.Username, Player2Id = player2?.Id });
+                //_context.Rooms.Remove(joinedRoom);
+                _context.SaveChanges();
+                return null;
+            }
         }
-            
+
     }
 }
