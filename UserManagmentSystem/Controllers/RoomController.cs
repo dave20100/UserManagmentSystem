@@ -9,7 +9,7 @@ using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
-    [Route("api/[controller]/{id?}")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RoomController : Controller
     {
@@ -19,8 +19,8 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpGet("Rooms")]
         [Authorize]
+        [HttpGet("Rooms")]
         public JsonResult GetRooms()
         {
             return Json(_context.Rooms.Select(room => (new { room})));
@@ -28,8 +28,8 @@ namespace UserManagmentSystem.Controllers
 
 
         [Authorize]
-        [HttpPost]
-        public JsonResult GetSpecificInfo(int id, [FromBody] Room game)
+        [HttpPost("Manage")]
+        public JsonResult RoomManaging(int id, [FromBody] Room game)
         {
             var roomInfo = _context.Rooms.FirstOrDefault(room => room.Id == id);
             if(roomInfo == null)
@@ -41,17 +41,16 @@ namespace UserManagmentSystem.Controllers
             }
             else
             {
-                var foundRoom = _context.Rooms.FirstOrDefault(room => (room.Player1Name == User.Identity.Name && room.Player2Name != null) || (room.Player2Name == User.Identity.Name && room.Player1Name != null));
-                if (foundRoom != null)
-                {
-                    return Json(foundRoom);
-                }
                 var joinedRoom = _context.Rooms.FirstOrDefault(room => room.Id == id);
+                if(joinedRoom.Player1Name == User.Identity.Name)
+                {
+                    return Json(new { status = 101 });
+                }
                 joinedRoom.Player2Name = User.Identity.Name;
 
                 //_context.Rooms.Remove(joinedRoom);
                 _context.SaveChanges();
-                return null;
+                return Json(joinedRoom);
             }
         }
 
