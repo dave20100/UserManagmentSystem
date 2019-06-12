@@ -46,6 +46,10 @@ namespace UserManagmentSystem.Controllers
                 {
                     return Json(new { status = 101 });
                 }
+                if(joinedRoom.Player1Name != null && joinedRoom.Player2Name != null)
+                {
+                    return Json(new { status = 102 });
+                }
                 joinedRoom.Player2Name = User.Identity.Name;
 
                 //_context.Rooms.Remove(joinedRoom);
