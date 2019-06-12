@@ -147,6 +147,14 @@ namespace UserManagmentSystem.Controllers
             return Json(user);
         }
 
+        [Authorize]
+        [HttpPost("AddFunds")]
+        public void AddFunds(int Amount)
+        {
+            findAndReturnUserFromDb(User.Identity.Name).Money += Amount;
+            _context.SaveChanges();
+        }
+
         private User findAndReturnUserFromDb(string username)
         {
             return _context.Users.FirstOrDefault((usr) => usr.Username == username);
