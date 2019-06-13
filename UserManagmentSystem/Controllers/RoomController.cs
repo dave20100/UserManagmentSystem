@@ -31,7 +31,14 @@ namespace UserManagmentSystem.Controllers
         [HttpPost("Manage")]
         public JsonResult RoomManaging(int id, [FromBody] Room game)
         {
+
+            var isOwnerAlready = _context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name || room.Player2Name == User.Identity.Name);
+            if(isOwnerAlready != null)
+            {
+                return new JsonResult(new { status = 103 });
+            }
             var roomInfo = _context.Rooms.FirstOrDefault(room => room.Id == id);
+
             if(roomInfo == null)
             {
                 Room newRoom = new Room() { Id = id, Player1Name = User.Identity.Name, timeControl = game.timeControl, timeControlBonus = game.timeControlBonus, Cash = game.Cash, GameName = game.GameName };
