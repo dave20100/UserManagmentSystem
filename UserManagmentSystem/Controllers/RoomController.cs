@@ -10,6 +10,8 @@ using UserManagmentSystem.Models;
 namespace UserManagmentSystem.Controllers
 {
     [Route("api/[controller]/{id?}")]
+    [Produces("application/json")]
+
     [ApiController]
     public class RoomController : Controller
     {

@@ -55,6 +55,19 @@ namespace UserManagmentSystem.Controllers
             return Json(new {currentUser});
         }
 
+        [HttpGet("ShowProfile")]
+        [Authorize]
+        public JsonResult GetSomeonesInfo(string username)
+        {
+            User profile = findAndReturnUserFromDb(username);
+            if(profile == null)
+            {
+                return new JsonResult(new { status = 101 });
+            }
+            profile.Password = null;
+            return new JsonResult(profile);
+        }
+
         
         [HttpDelete]
         [Authorize]

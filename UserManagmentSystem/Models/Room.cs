@@ -10,7 +10,6 @@ namespace UserManagmentSystem.Models
     public class Room
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Player1Name { get; set; }
         public string Player2Name { get; set; }
