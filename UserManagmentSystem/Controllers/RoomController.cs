@@ -66,10 +66,10 @@ namespace UserManagmentSystem.Controllers
         }
 
         [Authorize]
-        [HttpGet("Settings")]
-        public JsonResult RoomSettings()
+        [HttpGet("Settings/{gameId}")]
+        public JsonResult RoomSettings(int gameId)
         {
-            var roomsettings = _context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name);
+            var roomsettings = _context.Rooms.FirstOrDefault(room => room.Id == gameId);
             if(roomsettings == null)
             {
                 return new JsonResult(new { status = 101 });
