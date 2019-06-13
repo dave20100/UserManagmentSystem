@@ -58,6 +58,14 @@ namespace UserManagmentSystem.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("Settings")]
+        public JsonResult RoomSettings()
+        {
+            var roomsettings = _context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name);
+            return new JsonResult(roomsettings);
+        }
+
         [HttpGet("checkroom")]
         public JsonResult CheckRoom(int Id)
         {
