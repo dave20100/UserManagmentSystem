@@ -70,6 +70,10 @@ namespace UserManagmentSystem.Controllers
         public JsonResult RoomSettings()
         {
             var roomsettings = _context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name);
+            if(roomsettings == null)
+            {
+                return new JsonResult(new { status = 101 });
+            }
             return new JsonResult(roomsettings);
         }
 
