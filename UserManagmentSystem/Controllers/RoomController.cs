@@ -9,9 +9,7 @@ using UserManagmentSystem.Models;
 
 namespace UserManagmentSystem.Controllers
 {
-    [Route("api/[controller]/{id?}")]
-    [Produces("application/json")]
-
+    [Route("api/[controller]")]
     [ApiController]
     public class RoomController : Controller
     {
@@ -21,43 +19,55 @@ namespace UserManagmentSystem.Controllers
             _context = context;
         }
 
-        [HttpGet("Rooms")]
         [Authorize]
+        [HttpGet("Rooms")]
         public JsonResult GetRooms()
         {
             return Json(_context.Rooms.Select(room => (new { room})));
         }
 
-        [HttpPost("Create")]
-        [Authorize]
-        public void CreateRoom([FromBody] Room roomToCreate)
-        {
-            Room newRoom = roomToCreate;
-            newRoom.Player1Name = User.Identity.Name;
-            _context.Rooms.Add(newRoom);
-            _context.SaveChanges();
-        }
 
         [Authorize]
-        [HttpPost("Join")]
-        public void JoinRoom([FromBody]Room roomToJoin)
-        {
-            var joinedRoom =_context.Rooms.FirstOrDefault(room => room.Id == roomToJoin.Id);
-            joinedRoom.Player2Name = User.Identity.Name;
-            
-            _context.Rooms.Remove(joinedRoom);
-            _context.SaveChanges();
-        }
-
-        [HttpGet]
-        public JsonResult GetSpecificInfo(int id)
+        [HttpPost("Manage")]
+        public JsonResult RoomManaging(int id, [FromBody] Room game)
         {
             var roomInfo = _context.Rooms.FirstOrDefault(room => room.Id == id);
-            var player1 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player1Name);
+            if(roomInfo == null)
+            {
+                Room newRoom = new Room() { Id = id, Player1Name = User.Identity.Name, timeControl = game.timeControl, timeControlBonus = game.timeControlBonus, Cash = game.Cash, GameName = game.GameName };
+                _context.Rooms.Add(newRoom);
+                _context.SaveChanges();
+                return Json(newRoom);
+            }
+            else
+            {
+                var joinedRoom = _context.Rooms.FirstOrDefault(room => room.Id == id);
+                if(joinedRoom.Player1Name == User.Identity.Name)
+                {
+                    return Json(new { status = 101 });
+                }
+                if(joinedRoom.Player1Name != null && joinedRoom.Player2Name != null)
+                {
+                    return Json(new { status = 102 });
+                }
+                joinedRoom.Player2Name = User.Identity.Name;
 
-            var player2 = _context.Users.FirstOrDefault(user => user.Username == roomInfo.Player2Name);
-            return Json(new { Room = roomInfo, Player1Name = player1?.Username, Player1Id = player1?.Id, Player2Name = player2?.Username, Player2Id = player2?.Id });
+                //_context.Rooms.Remove(joinedRoom);
+                _context.SaveChanges();
+                return Json(joinedRoom);
+            }
         }
-            
+
+        [HttpGet("checkroom")]
+        public JsonResult CheckRoom(int Id)
+        {
+            var gameroom = _context.Rooms.FirstOrDefault(room => room.Id == Id && room.Player1Name != null && room.Player2Name != null);
+            if (gameroom != null)
+            {
+                return Json(new { Username1 = gameroom.Player1Name, Username2 = gameroom.Player2Name });
+            }
+            return Json(new { status = 101 });
+        }
+
     }
 }

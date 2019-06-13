@@ -16,7 +16,7 @@ namespace UserManagmentSystem
 
         public static class TokenParameters
         {
-            public static DateTime expireDate = DateTime.Now.AddHours(24 - DateTime.Now.Hour);
+            public static Func<DateTime> expireDate => () => DateTime.Now.AddHours(24 - DateTime.Now.Hour);
             public static SigningCredentials userSigningCredentials = new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256Signature);
             public static string issuer = "trc";
             public static string audience = "users";
@@ -27,7 +27,7 @@ namespace UserManagmentSystem
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, username));
             var token = new JwtSecurityToken(
-                expires: TokenParameters.expireDate,
+                expires: TokenParameters.expireDate(),
                 signingCredentials: TokenParameters.userSigningCredentials,
                 issuer: TokenParameters.issuer,
                 audience: TokenParameters.audience,
