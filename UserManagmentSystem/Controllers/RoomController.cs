@@ -74,7 +74,8 @@ namespace UserManagmentSystem.Controllers
             {
                 return new JsonResult(new { status = 101 });
             }
-            return new JsonResult(roomsettings);
+            roomsettings.GameName = "Warcaby";
+            return new JsonResult(new { settings = roomsettings, user1id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player1Name)?.Id, user2id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player2Name)?.Id });
         }
 
         [HttpGet("checkroom")]
