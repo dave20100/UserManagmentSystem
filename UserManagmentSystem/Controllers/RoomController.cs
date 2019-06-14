@@ -80,6 +80,32 @@ namespace UserManagmentSystem.Controllers
             return new JsonResult(new { settings = roomsettings, yourId = _context.Users.FirstOrDefault(usr => usr.Username == yourname)?.Id, oponnentId = _context.Users.FirstOrDefault(usr => usr.Username == oponnentName)?.Id });
         }
 
+        [Authorize]
+        [HttpPost("Win")]
+        public JsonResult WinGame()
+        {
+
+            var gameroom =_context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name || room.Player2Name == User.Identity.Name);
+            var curuser =_context.Users.FirstOrDefault(usr => usr.Username == User.Identity.Name);
+            curuser.Money += gameroom.Cash;
+            curuser.RankingPoints += 20;
+            _context.SaveChanges();
+            return new JsonResult(new { status = 100 });
+        }
+
+        [Authorize]
+        [HttpPost("Lose")]
+        public JsonResult LoseGame()
+        {
+
+            var gameroom = _context.Rooms.FirstOrDefault(room => room.Player1Name == User.Identity.Name || room.Player2Name == User.Identity.Name);
+            var curuser = _context.Users.FirstOrDefault(usr => usr.Username == User.Identity.Name);
+            curuser.Money -= gameroom.Cash;
+            curuser.RankingPoints -= 20;
+            _context.SaveChanges();
+            return new JsonResult(new { status = 100 });
+        }
+
         [HttpGet("checkroom")]
         public JsonResult CheckRoom(int Id)
         {
