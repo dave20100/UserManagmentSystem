@@ -81,8 +81,8 @@ namespace UserManagmentSystem.Controllers
             {
                 settings = roomsettings,
                 MyId = _context.Users.FirstOrDefault(usr => usr.Username == yourname)?.Id,
-                Player1Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player1Name).Id,
-                Player2Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player2Name).Id
+                Player1Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player1Name)?.Id,
+                Player2Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player2Name)?.Id
             }); 
         }
 
