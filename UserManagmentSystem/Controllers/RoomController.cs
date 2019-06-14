@@ -77,7 +77,13 @@ namespace UserManagmentSystem.Controllers
             roomsettings.GameName = "Warcaby";
             string yourname = User.Identity.Name;
             string oponnentName = ((roomsettings.Player1Name == User.Identity.Name) ? roomsettings.Player2Name : roomsettings.Player1Name);
-            return new JsonResult(new { settings = roomsettings, yourId = _context.Users.FirstOrDefault(usr => usr.Username == yourname)?.Id, oponnentId = _context.Users.FirstOrDefault(usr => usr.Username == oponnentName)?.Id });
+            return new JsonResult(new
+            {
+                settings = roomsettings,
+                MyId = _context.Users.FirstOrDefault(usr => usr.Username == yourname)?.Id,
+                Player1Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player1Name).Id,
+                Player2Id = _context.Users.FirstOrDefault(usr => usr.Username == roomsettings.Player2Name).Id
+            }); 
         }
 
         [Authorize]
